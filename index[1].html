@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expediente bajo análisis | Derechos en el trabajo</title>
+<style>
+:root{--navy:#13233f;--blue:#275dad;--cyan:#bfe9ef;--cream:#f6f3eb;--ink:#182334;--green:#237a57;--red:#b44949;--gold:#f1c45b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#e8f2f7,#f7f3e9);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+header{background:var(--navy);color:white;padding:22px 18px;text-align:center;border-bottom:5px solid var(--gold)}header .tag{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:800}h1{margin:5px 0;font-size:clamp(1.7rem,5vw,2.7rem)}header p{margin:6px auto 0;max-width:680px;color:#e0e9f6}
+main{max-width:900px;margin:22px auto;padding:0 14px 40px}.panel{background:white;border:1px solid #d7e0e8;border-radius:18px;padding:20px;box-shadow:0 10px 28px #1b315315;margin-bottom:16px}
+.hidden{display:none!important}.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:180px}
+label{display:block;font-weight:750;margin-bottom:7px}input{width:100%;padding:13px;border:2px solid #cad5e2;border-radius:10px;font:inherit}
+button{font:inherit;font-weight:800;border:0;border-radius:11px;padding:12px 16px;cursor:pointer;background:var(--blue);color:white;transition:transform .12s,filter .12s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.secondary{background:#e7eef8;color:var(--navy)}.gold{background:var(--gold);color:#35280a}.small{font-size:.88rem;color:#596779}
+.progress-wrap{height:9px;background:#e8edf4;border-radius:9px;overflow:hidden;margin:10px 0 18px}.progress{height:100%;width:0;background:var(--gold);transition:width .25s}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.pill{border-radius:100px;padding:6px 10px;background:#edf3fb;color:#214878;font-size:.85rem;font-weight:800}
+.case-title{font-size:1.35rem;margin:4px 0}.story{background:#f3f7fc;border-left:5px solid var(--blue);padding:14px 16px;border-radius:8px;line-height:1.55}
+.clue{border:2px solid #d9e1eb;border-radius:14px;padding:15px;margin:12px 0;background:#fff}.clue h3{margin:0 0 6px;font-size:1.02rem}.clue p{margin:0 0 13px;line-height:1.45}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1;min-width:130px;padding:10px;font-size:.91rem}.btn-good{background:var(--green)}.btn-bad{background:#6d7787}.btn-warn{background:#ad6a20}
+.feedback{padding:12px;border-radius:10px;margin-top:10px;font-weight:650;line-height:1.45}.feedback.ok{background:#e5f5ed;color:#18583f}.feedback.no{background:#fff0e5;color:#804017}
+.score-big{font-size:3rem;font-weight:900;color:var(--blue);line-height:1}.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:15px 0}.stat{background:#f2f6fb;border-radius:12px;padding:14px}.stat strong{display:block;font-size:1.35rem}
+footer{text-align:center;color:#687789;font-size:.85rem;padding:0 15px 24px}.source{font-size:.9rem;overflow-wrap:anywhere}.source a{color:#2457a6}
+#toast{font-size:.9rem;margin-top:10px;color:#5d6878}
+</style></head>
+<body>
+<header><div class="tag">Juego de investigación · Derechos en el trabajo</div><h1>🗂️ Expediente bajo análisis</h1><p>Reuní evidencias, detectá qué se puede afirmar y armá una recomendación responsable para la autoridad laboral.</p></header>
+<main>
+<section id="start" class="panel">
+<h2>🪪 Antes de abrir el expediente</h2>
+<p>Ingresá tu nombre para registrar el resultado al terminar. No es un examen de memoria: vas a jugar a investigar como parte de un equipo.</p>
+<div class="row"><div><label for="student">Tu nombre y apellido</label><input id="student" maxlength="80" autocomplete="name" placeholder="Ej.: Martina Pérez"></div><div><label for="team">Curso (opcional)</label><input id="team" maxlength="40" placeholder="Ej.: 4.º B"></div></div>
+<p class="small">Duración aproximada: 4–6 minutos. Se guardará tu puntaje al finalizar si el juego está conectado a la hoja de resultados.</p>
+<button id="begin">Abrir expediente →</button><div id="startMsg" class="small" role="status"></div>
+</section>
+<section id="game" class="panel hidden">
+<div class="topline"><span class="pill" id="stage">CASO 1 DE 5</span><span class="pill">⭐ Puntaje: <span id="score">0</span></span><span class="pill">🧩 Racha: <span id="streak">0</span></span></div>
+<div class="progress-wrap"><div id="progress" class="progress"></div></div>
+<h2 class="case-title" id="caseTitle"></h2><div class="story" id="story"></div>
+<p><strong>Tu tarea:</strong> revisá la tarjeta y clasificá cómo debería tratarla una investigación responsable.</p>
+<div id="clueArea"></div><div id="caseFeedback" aria-live="polite"></div>
+<div class="topline"><span class="small" id="counter"></span><button id="next" class="gold hidden">Siguiente etapa →</button></div>
+</section>
+<section id="finish" class="panel hidden">
+<div class="tag" style="color:#275dad">Expediente cerrado</div><h2 id="endTitle">¡Buen trabajo!</h2><p class="score-big"><span id="finalScore">0</span><span style="font-size:1.1rem"> / 100</span></p>
+<div class="result-grid"><div class="stat">Evidencias bien clasificadas<strong id="correctCount">0</strong></div><div class="stat">Nivel de análisis<strong id="rank">En práctica</strong></div><div class="stat">Tiempo<strong id="elapsed">0:00</strong></div></div>
+<p id="summary"></p><div id="saveStatus" class="feedback">Enviando resultado…</div>
+<button id="again">Volver a jugar</button>
+</section>
+<section class="panel">
+<h3>🔎 ¿Qué estás practicando?</h3><p style="margin-bottom:0">Distinguir información documentada, testimonios que deberían obtenerse correctamente, conclusiones que todavía requieren verificación y pedidos concretos a la autoridad. El juego se basa en la exposición sobre derechos laborales, normas y el caso de Joaquín V. González.</p>
+</section>
+</main>
+<footer>Actividad educativa · Los casos y las decisiones se presentan con fines escolares. Una imputación no equivale a una condena.</footer>
+<script>
+/* CONFIGURACIÓN: pegá aquí la URL de implementación de Google Apps Script.
+   Si queda vacía, el juego funciona pero no envía los resultados. */
+const RESULTS_ENDPOINT = "PEGAR_AQUI_URL_WEB_APP";
+
+const cases = [
+{title:"Etapa 1 · El lugar de trabajo",story:"En un expediente sobre trabajo rural se describe una inspección en la que se observaron condiciones de alojamiento y seguridad que preocupan. Llegan distintas tarjetas al equipo investigador.",clues:[
+{t:"Informe oficial publicado",d:"Una publicación del Ministerio Público Fiscal describe el operativo y las condiciones observadas.",right:"documentada",why:"Es una fuente pública identificable que puede consultarse y contrastarse. Conviene guardar el enlace y verificar qué dice exactamente.",pts:10},
+{t:"Rumor del pasillo",d:"Alguien comenta que “seguro todos los campos de la zona hacen lo mismo”, pero no aporta datos.",right:"insuficiente",why:"Es una generalización sin evidencia concreta. No permite afirmar que otros establecimientos actúen igual.",pts:10},
+{t:"Conclusión anticipada",d:"Un compañero escribe: “Ya sabemos que todos los responsables son culpables”.",right:"no probado",why:"No se puede declarar culpable a alguien por una sospecha o una noticia. Los hechos deben evaluarse mediante el procedimiento correspondiente.",pts:10}
+]},
+{title:"Etapa 2 · La evidencia que falta",story:"El equipo necesita completar la información sin inventar pruebas ni poner en riesgo a las personas involucradas.",clues:[
+{t:"Acta de inspección",d:"Se solicita al organismo competente consultar el acta y el informe oficial del operativo.",right:"pedido",why:"Es un pedido concreto de documentación que podría corroborar qué se observó durante la inspección.",pts:10},
+{t:"Entrevista inventada",d:"Para terminar rápido, alguien propone escribir una entrevista ficticia y presentarla como si un trabajador la hubiera dado.",right:"no probado",why:"No corresponde fabricar testimonios. La autoridad puede consultar declaraciones existentes o recibir testimonios voluntarios con resguardos.",pts:10},
+{t:"Testimonio voluntario",d:"La autoridad propone recibir el relato de una persona que acepta declarar, cuidando su privacidad y seguridad.",right:"pedido",why:"Un testimonio puede ser relevante si se obtiene de manera auténtica y adecuada; no debe presionarse a nadie.",pts:10}
+]},
+{title:"Etapa 3 · ¿Qué derecho se relaciona?",story:"Ahora hay que conectar los hechos documentados con las normas, sin afirmar más de lo que la evidencia permite.",clues:[
+{t:"Seguridad e higiene",d:"La información describe falta de condiciones apropiadas de higiene y de provisión segura de agua potable.",right:"documentada",why:"La información oficial permite señalar posibles problemas vinculados con seguridad, higiene y condiciones dignas; la autoridad debe evaluar los hechos.",pts:10},
+{t:"Artículo 7 del PIDESC",d:"El equipo propone revisar el artículo 7 del Pacto Internacional de Derechos Económicos, Sociales y Culturales sobre condiciones de trabajo equitativas y satisfactorias.",right:"documentada",why:"Es una norma pertinente para analizar condiciones laborales, remuneración, seguridad e higiene.",pts:10},
+{t:"La norma lo demuestra todo",d:"Alguien dice que citar una ley basta para probar que cada detalle de la denuncia ocurrió.",right:"no probado",why:"Las normas sirven para evaluar hechos, pero no sustituyen las pruebas sobre lo que efectivamente pasó.",pts:10}
+]},
+{title:"Etapa 4 · La precisión importa",story:"En la carpeta aparece una noticia sobre actuaciones judiciales y una reparación económica. El equipo debe comunicarlo con cuidado.",clues:[
+{t:"Distinguir imputación y condena",d:"La nota informa una imputación por presunta trata laboral. El equipo aclara que una imputación no equivale por sí sola a una condena.",right:"documentada",why:"Es una distinción esencial para informar con precisión y respetar el proceso legal.",pts:10},
+{t:"Acuerdo de reparación",d:"La fuente oficial informa que hubo un acuerdo de conciliación y una reparación económica para los trabajadores.",right:"documentada",why:"Se puede comunicar como información atribuida a la fuente oficial y sin inventar detalles que no aparecen en ella.",pts:10},
+{t:"Publicar datos personales",d:"El equipo propone difundir nombres, teléfonos y direcciones de trabajadores para que el caso parezca más real.",right:"no probado",why:"No hace falta exponer datos personales para analizar el caso. La privacidad y la seguridad deben cuidarse.",pts:10}
+]},
+{title:"Etapa 5 · Tu recomendación",story:"Llegó el momento de cerrar el expediente escolar. El equipo debe proponer una acción útil y realista, sin reemplazar a la autoridad.",clues:[
+{t:"Pedir controles rurales",d:"Solicitar que se refuercen inspecciones y se verifiquen agua potable, higiene, alojamiento, herramientas y elementos de protección.",right:"pedido",why:"Es una recomendación concreta de prevención y control, dentro de las funciones de la autoridad competente.",pts:10},
+{t:"Declarar culpabilidad por cuenta propia",d:"El equipo decide publicar que una persona es culpable, sin esperar la evaluación de las autoridades.",right:"no probado",why:"El juego consiste en analizar y pedir que se investigue; no en sustituir a la justicia ni afirmar una condena no acreditada.",pts:10},
+{t:"Información para trabajadores",d:"Proponer campañas para que las personas trabajadoras conozcan sus derechos y sepan dónde pedir ayuda.",right:"pedido",why:"La prevención y el acceso a información son propuestas útiles que complementan las inspecciones.",pts:10}
+]}
+];
+const $=id=>document.getElementById(id);
+let player="", course="", caseIndex=0, clueIndex=0, score=0, correct=0, streak=0, started=0, locked=false, chosen=[];
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function begin(){player=$("student").value.trim();course=$("team").value.trim();if(!player){$("startMsg").textContent="Escribí tu nombre para empezar."; $("student").focus();return}
+caseIndex=0;clueIndex=0;score=0;correct=0;streak=0;chosen=[];started=Date.now();$("score").textContent=score;$("streak").textContent=streak;$("start").classList.add("hidden");$("finish").classList.add("hidden");$("game").classList.remove("hidden");renderCase()}
+function renderCase(){const c=cases[caseIndex];$("stage").textContent=`ETAPA ${caseIndex+1} DE ${cases.length}`;$("caseTitle").textContent=c.title;$("story").textContent=c.story;$("progress").style.width=`${(caseIndex/cases.length)*100}%`;$("caseFeedback").innerHTML="";$("next").classList.add("hidden");chosen=shuffle(c.clues);clueIndex=0;renderClue()}
+function renderClue(){locked=false;const c=chosen[clueIndex];$("clueArea").innerHTML=`<article class="clue"><h3>📌 ${c.t}</h3><p>${c.d}</p><div class="actions"><button data-v="documentada">📄 Evidencia documentada</button><button data-v="pedido" class="btn-good">🛠️ Pedir / verificar</button><button data-v="insuficiente" class="btn-warn">🟠 Información insuficiente</button><button data-v="no probado" class="btn-bad">⛔ No se puede afirmar</button></div><div id="feedback"></div></article>`;document.querySelectorAll("[data-v]").forEach(b=>b.addEventListener("click",()=>classify(b.dataset.v,c)))}
+function classify(v,c){if(locked)return;locked=true;const ok=v===c.right;if(ok){score+=c.pts;correct++;streak++;}else{streak=0;score=Math.max(0,score-3)}$("score").textContent=score;$("streak").textContent=streak;const f=$("feedback");f.className="feedback "+(ok?"ok":"no");f.textContent=(ok?"✔ Clasificación acertada. ":"↻ No era la mejor clasificación. ")+c.why;document.querySelectorAll("[data-v]").forEach(b=>b.disabled=true);clueIndex++;$("counter").textContent=`Tarjeta ${clueIndex} de ${chosen.length}`;if(clueIndex<chosen.length){const b=document.createElement("button");b.className="secondary";b.textContent="Siguiente tarjeta →";b.style.marginTop="10px";b.onclick=renderClue;$("clueArea").appendChild(b)}else{$("progress").style.width=`${((caseIndex+1)/cases.length)*100}%`;if(caseIndex<cases.length-1){$("next").textContent="Siguiente etapa →";$("next").classList.remove("hidden")}else{$("next").textContent="Ver resultado final →";$("next").classList.remove("hidden");$("next").onclick=finishGame}}}
+$("begin").onclick=begin;$("next").onclick=()=>{caseIndex++;renderCase()};$("again").onclick=()=>{$("finish").classList.add("hidden");$("start").classList.remove("hidden");$("startMsg").textContent=""};
+function finishGame(){ $("game").classList.add("hidden");$("finish").classList.remove("hidden");const elapsed=Math.floor((Date.now()-started)/1000);const totalCards=cases.reduce((n,c)=>n+c.clues.length,0);const max=totalCards*10;const final=Math.round(score/max*100);$("finalScore").textContent=final;$("correctCount").textContent=`${correct} / ${totalCards}`;$("rank").textContent=final>=90?"Analista experto":final>=70?"Buen investigador":final>=50?"En entrenamiento":"Expediente por revisar";$("elapsed").textContent=`${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,"0")}`;$("summary").textContent=final>=80?"Excelente: separaste la evidencia de las conclusiones y elegiste acciones responsables.":final>=55?"Buen trabajo. Recordá distinguir lo documentado, lo que falta verificar y lo que no se puede afirmar todavía.":"Seguí practicando: un buen análisis se apoya en fuentes, cuida a las personas y no adelanta conclusiones.";sendResult({nombre:player,curso:course,puntaje:final,puntos:score,clasificaciones_correctas:correct,total_tarjetas:max,tiempo_segundos:elapsed,fecha_hora:new Date().toISOString(),juego:"Expediente bajo análisis"})}
+async function sendResult(data){const box=$("saveStatus");if(!RESULTS_ENDPOINT||RESULTS_ENDPOINT.includes("PEGAR_AQUI")){box.className="feedback no";box.textContent="Partida terminada. Para que el resultado llegue a la persona docente, falta conectar la URL de Google Apps Script siguiendo el archivo LEEME.";return}try{await fetch(RESULTS_ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(data)});box.className="feedback ok";box.textContent="¡Resultado enviado! Si la conexión está configurada, se guardará en la hoja de resultados."}catch(e){box.className="feedback no";box.textContent="No se pudo confirmar el envío. Revisá la conexión o avisale a la persona docente."}}
+</script></body></html>
